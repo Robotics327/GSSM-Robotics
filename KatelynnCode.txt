@@ -1,0 +1,98 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Blinker;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+
+@TeleOp(name="KatelynnCode", group="Linear Opmode")
+
+public class KatelynnCode extends LinearOpMode {
+    private DcMotor blm; //back left motor
+    private DcMotor brm; //back right motor
+    private DcMotor flm; //front left motor
+    private DcMotor frm; //front right motor
+    private Blinker expansion_Hub_1;
+    private Blinker expansion_Hub_2;
+    private DcMotor arm; //arm lift motor
+    private DcMotor lift; //lift motor
+    private Servo clw; //claw motor
+    //private Servo lh; //left hook
+    //private Servo rh; //right hook
+    
+    private ElapsedTime runtime = new ElapsedTime();
+
+    @Override
+    public void runOpMode() {
+        blm = hardwareMap.get(DcMotor.class, "blm");
+        brm = hardwareMap.get(DcMotor.class, "brm");
+        flm = hardwareMap.get(DcMotor.class, "flm");
+        frm = hardwareMap.get(DcMotor.class, "frm");
+        expansion_Hub_1 = hardwareMap.get(Blinker.class, "Expansion Hub 1");
+        expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        clw = hardwareMap.get(Servo.class, "clw");
+        //lh = hardwareMap.get(Servo.class, "lh");
+        //rh = hardwareMap.get(Servo.class, "rh");
+        
+        clw.setPosition(0); //initialize position
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        
+        telemetry.addData("Status", "Running");
+        telemetry.update();
+
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+            double rightPower = this.gamepad1.right_stick_y;
+            double leftPower = -this.gamepad1.left_stick_y;
+            blm.setPower(leftPower);
+            brm.setPower(rightPower);
+            flm.setPower(leftPower);
+            frm.setPower(rightPower);
+            
+            //claw
+            if (gamepad2.right_bumper){
+                //open claw by turning 120 degrees
+                clw.setPosition(0.67); //
+            } else if (gamepad2.left_bumper){
+                //close claw
+                clw.setPosition(0);
+            }
+            
+            //angle of arm
+            double armAngle = -this.gamepad2.left_stick_y;
+            arm.setPower(armAngle);
+            
+            //length of lift
+            double liftPower = -this.gamepad2.right_stick_y;
+            lift.setPower(liftPower);
+            
+            //move foundation  
+            //if (gamepad2.a){
+                //put hooks down
+                //lh.setPosition(0.5);
+                //rh.setPosition(0.5);
+            //} else if (gamepad2.y){
+                //put hooks back up
+                //lh.setPosition(0);
+                //rh.setPosition(0);
+            //}
+            
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update(); //show the time 
+              
+            
+
+        }
+    }
+}
